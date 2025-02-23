@@ -1,12 +1,24 @@
 @echo off
-taskkill /F /IM cmd.exe /T
-timeout /t 2
+setlocal
 
-del /F /Q loop_parrot.bat
-del /F /Q parrot_background.bat
-del /F /Q setup.bat
-del /F /Q cleanup.bat
+:: Arrêter les processus en cours
+taskkill /F /IM "cmd.exe" /T > nul 2>&1
+taskkill /F /IM "parrot_background.bat" /T > nul 2>&1
+taskkill /F /IM "loop_parrot.bat" /T > nul 2>&1
 
-rd /S /Q "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\parrot_background.bat"
+:: Supprimer les fichiers téléchargés
+del /F /Q "%USERPROFILE%\parrot\cleanup.bat" > nul 2>&1
+del /F /Q "%USERPROFILE%\parrot\setup.bat" > nul 2>&1
+del /F /Q "%USERPROFILE%\parrot\loop_parrot.bat" > nul 2>&1
+del /F /Q "%USERPROFILE%\parrot\parrot_background.bat" > nul 2>&1
+
+:: Supprimer les fichiers de démarrage (si ajoutés via Startup ou registre)
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v Parrot /f > nul 2>&1
+
+:: Supprimer le dossier Parrot (si nécessaire)
+rmdir /S /Q "%USERPROFILE%\parrot" > nul 2>&1
+
+:: Se supprimer
+del /F /Q "%~f0" > nul 2>&1
 
 exit

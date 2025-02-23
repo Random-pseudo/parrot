@@ -1,2 +1,7 @@
 @echo off
-copy parrot_background.bat "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\"
+set REG_KEY="HKCU\Software\Microsoft\Windows\CurrentVersion\Run"
+set FILE_PATH="C:\Utilisateurs\Eleve\Téléchargements\parrot_background.bat"
+
+reg add %REG_KEY% /v Parrot /t REG_SZ /d "%FILE_PATH%" /f
+
+exit

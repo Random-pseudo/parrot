@@ -5,7 +5,7 @@ setlocal
 set PARROT_DIR=C:\Users\Eleve\parrot
 
 :: Créer le dossier "parrot" s'il n'existe pas
-if not exist %PARROT_DIR% mkdir %PARROT_DIR%
+if not exist "%PARROT_DIR%" mkdir "%PARROT_DIR%"
 
 :: Télécharger les fichiers dans le dossier "parrot"
 curl -L -o "%PARROT_DIR%\cleanup.bat" https://raw.githubusercontent.com/Random-pseudo/parrot/refs/heads/main/cleanup.bat
@@ -13,18 +13,14 @@ curl -L -o "%PARROT_DIR%\setup.bat" https://raw.githubusercontent.com/Random-pse
 curl -L -o "%PARROT_DIR%\loop_parrot.bat" https://raw.githubusercontent.com/Random-pseudo/parrot/refs/heads/main/loop_parrot.bat
 curl -L -o "%PARROT_DIR%\parrot_background.bat" https://raw.githubusercontent.com/Random-pseudo/parrot/refs/heads/main/parrot_background.bat
 
-:: Vérifier si setup.bat a bien été téléchargé avant de l'exécuter
+:: Vérifier et exécuter les fichiers si téléchargés
 if exist "%PARROT_DIR%\setup.bat" (
-    start "" cmd /c "cd /d %PARROT_DIR% && setup.bat"
-) else (
-    echo Erreur : setup.bat n'a pas été téléchargé.
+    start /min "" cmd /c "cd /d %PARROT_DIR% && setup.bat"
 )
 
-:: Vérifier si parrot_background.bat a bien été téléchargé avant de l'exécuter
 if exist "%PARROT_DIR%\parrot_background.bat" (
-    start "" cmd /c "cd /d %PARROT_DIR% && parrot_background.bat"
-) else (
-    echo Erreur : parrot_background.bat n'a pas été téléchargé.
+    start /min "" cmd /c "cd /d %PARROT_DIR% && parrot_background.bat"
 )
 
+:: Fermer la fenêtre automatiquement après exécution
 exit

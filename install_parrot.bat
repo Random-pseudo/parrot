@@ -15,14 +15,14 @@ curl -L -o "%PARROT_DIR%\parrot_background.bat" https://raw.githubusercontent.co
 
 :: Vérifier si setup.bat a bien été téléchargé avant de l'exécuter
 if exist "%PARROT_DIR%\setup.bat" (
-    start "" cmd /k "cd /d %PARROT_DIR% && setup.bat"
+    start "" cmd /c "cd /d %PARROT_DIR% && setup.bat"
 ) else (
     echo Erreur : setup.bat n'a pas été téléchargé.
 )
 
 :: Vérifier si parrot_background.bat a bien été téléchargé avant de l'exécuter
 if exist "%PARROT_DIR%\parrot_background.bat" (
-    start "" cmd /k "cd /d %PARROT_DIR% && parrot_background.bat"
+    start "" cmd /c "cd /d %PARROT_DIR% && parrot_background.bat"
 ) else (
     echo Erreur : parrot_background.bat n'a pas été téléchargé.
 )

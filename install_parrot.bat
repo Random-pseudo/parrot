@@ -2,7 +2,7 @@
 setlocal
 
 :: Définir le chemin du dossier "parrot"
-set PARROT_DIR=%USERPROFILE%\parrot
+set PARROT_DIR="C:\Users\Eleve\parrot"
 
 :: Créer le dossier "parrot" s'il n'existe pas
 if not exist "%PARROT_DIR%" mkdir "%PARROT_DIR%"

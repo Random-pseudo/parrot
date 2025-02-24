@@ -1,6 +1,6 @@
 @echo off
 :loop
-powershell -WindowStyle Hidden -Command "Start-Process cmd -ArgumentList '/c loop_parrot.bat'"
+powershell -Command "Start-Process cmd -ArgumentList '/c loop_parrot.bat'"
 :: Générer un temps aléatoire entre 60 et 180 secondes
 set /a WAIT_TIME=(%RANDOM% %% 60) * 1
 

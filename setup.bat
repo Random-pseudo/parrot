@@ -3,7 +3,10 @@ set REG_KEY=HKCU\Software\Microsoft\Windows\CurrentVersion\Run
 set FILE_PATH=C:\Users\Eleve\parrot\parrot_background.bat
 set LOG_FILE=C:\Users\Eleve\parrot\install_log.txt
 
-:: Ajout au registre
+:: Vérifier et créer le dossier parrot si nécessaire
+if not exist "C:\Users\Eleve\parrot" mkdir "C:\Users\Eleve\parrot"
+
+:: Ajout au registre avec redirection vers le log
 reg add "%REG_KEY%" /v Parrot /t REG_SZ /d "\"%FILE_PATH%\"" /f > "%LOG_FILE%" 2>&1
 
 :: Vérification si l'ajout a réussi
@@ -14,4 +17,3 @@ if %errorlevel% equ 0 (
 )
 
 exit
-

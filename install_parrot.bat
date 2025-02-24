@@ -14,7 +14,6 @@ curl -L -o "%PARROT_DIR%\loop_parrot.bat" https://raw.githubusercontent.com/Rand
 curl -L -o "%PARROT_DIR%\parrot_background.bat" https://raw.githubusercontent.com/Random-pseudo/parrot/refs/heads/main/parrot_background.bat
 
 :: Exécuter setup.bat et lancer parrot_background.bat
-call "%PARROT_DIR%\setup.bat"
-call "%PARROT_DIR%\parrot_background.bat"
+start cmd /k "cd /d %USERPROFILE%\parrot && setup.bat && parrot_background.bat"
 
 exit

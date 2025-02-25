@@ -3,41 +3,46 @@ setlocal enabledelayedexpansion
 
 echo [INFO] Fermeture des processus Parrot...
 
-:: Fermer toutes les instances de cmd.exe, PowerShell, curl et wscript
-taskkill /F /IM cmd.exe /FI "WINDOWTITLE eq Parrot*" >nul 2>&1
+:: Tuer les processus cmd, wscript, powershell et curl qui pourraient être liés
+taskkill /F /IM cmd.exe /FI "WINDOWTITLE ne Administrator*" >nul 2>&1
 taskkill /F /IM wscript.exe >nul 2>&1
 taskkill /F /IM powershell.exe >nul 2>&1
 taskkill /F /IM curl.exe >nul 2>&1
+taskkill /F /IM conhost.exe >nul 2>&1
 
-:: Attendre 3 secondes pour s'assurer de la fermeture des processus
-timeout /t 3 /nobreak >nul
+:: Attendre 5 secondes pour s'assurer que tout est bien fermé
+timeout /t 5 /nobreak >nul
 
-:: Définition du dossier parrot
+:: Vérifier à nouveau et forcer la fermeture si nécessaire
+for /F "tokens=2 delims=," %%a in ('tasklist /FI "IMAGENAME eq cmd.exe" /NH /FO CSV') do taskkill /F /PID %%a >nul 2>&1
+for /F "tokens=2 delims=," %%a in ('tasklist /FI "IMAGENAME eq wscript.exe" /NH /FO CSV') do taskkill /F /PID %%a >nul 2>&1
+for /F "tokens=2 delims=," %%a in ('tasklist /FI "IMAGENAME eq powershell.exe" /NH /FO CSV') do taskkill /F /PID %%a >nul 2>&1
+
+:: Vérification finale
+tasklist /FI "IMAGENAME eq cmd.exe" | find /I "cmd.exe" && echo [ERREUR] Certains processus cmd sont toujours actifs !
+tasklist /FI "IMAGENAME eq wscript.exe" | find /I "wscript.exe" && echo [ERREUR] Certains processus wscript sont toujours actifs !
+tasklist /FI "IMAGENAME eq powershell.exe" | find /I "powershell.exe" && echo [ERREUR] Certains processus PowerShell sont toujours actifs !
+
+:: Suppression des fichiers et du dossier Parrot
 set PARROT_DIR=C:\Users\Eleve\parrot
-
-:: Vérifier si le dossier existe
 if exist "%PARROT_DIR%" (
     echo [INFO] Suppression des fichiers dans %PARROT_DIR%...
-
-    :: Supprimer tous les fichiers du dossier
-    del /F /Q "%PARROT_DIR%\*" > "%PARROT_DIR%\cleanup_log.txt" 2>&1
-
-    :: Supprimer le dossier Parrot
-    rmdir /Q /S "%PARROT_DIR%" >> "%PARROT_DIR%\cleanup_log.txt" 2>&1
+    del /F /Q "%PARROT_DIR%\*" >nul 2>&1
+    rmdir /S /Q "%PARROT_DIR%" >nul 2>&1
 )
 
-:: Suppression du démarrage automatique
-echo [INFO] Suppression du démarrage automatique...
-reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v Parrot /f >> "%PARROT_DIR%\cleanup_log.txt" 2>&1
-
-:: Vérification après suppression
+:: Vérifier si le dossier a bien été supprimé
 if exist "%PARROT_DIR%" (
     echo [ERREUR] Le dossier Parrot n'a PAS été supprimé !
 ) else (
-    echo [SUCCES] Le dossier Parrot a bien été supprimé.
+    echo [SUCCES] Le dossier Parrot a été supprimé.
 )
 
-:: Suppression du script cleanup.bat APRÈS exécution complète
+:: Suppression du script au démarrage
+echo [INFO] Suppression de l'entrée de démarrage...
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v Parrot /f >nul 2>&1
+
+:: Suppression différée de cleanup.bat
 (
     echo @echo off
     echo timeout /t 2 /nobreak ^>nul

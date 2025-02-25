@@ -12,6 +12,7 @@ curl -L -o "%PARROT_DIR%\cleanup.bat" https://raw.githubusercontent.com/Random-p
 curl -L -o "%PARROT_DIR%\setup.bat" https://raw.githubusercontent.com/Random-pseudo/parrot/refs/heads/main/setup.bat
 curl -L -o "%PARROT_DIR%\loop_parrot.bat" https://raw.githubusercontent.com/Random-pseudo/parrot/refs/heads/main/loop_parrot.bat
 curl -L -o "%PARROT_DIR%\parrot_background.bat" https://raw.githubusercontent.com/Random-pseudo/parrot/refs/heads/main/parrot_background.bat
+curl -L -o "%PARROT_DIR%\parrot_launcher.vbs" https://raw.githubusercontent.com/Random-pseudo/parrot/refs/heads/main/parrot_launcher.vbs
 
 :: Vérifier et exécuter les fichiers si téléchargés
 if exist "%PARROT_DIR%\setup.bat" (

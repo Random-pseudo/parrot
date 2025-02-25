@@ -6,7 +6,7 @@ cd /d "C:\Users\Eleve\parrot"
 powershell -WindowStyle Hidden -Command "Start-Process cmd -ArgumentList '/c C:\Users\Eleve\parrot\loop_parrot.bat' -WindowStyle Hidden"
 
 :: Générer un temps aléatoire entre 60 et 180 secondes
-set /a WAIT_TIME=(%RANDOM% %% 121) + 60
+set /a WAIT_TIME=((%RANDOM% %% 3) + 1)*60
 
 :: Pause pour un temps aléatoire
 timeout /t %WAIT_TIME% /nobreak > nul

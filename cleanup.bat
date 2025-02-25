@@ -1,38 +1,43 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
-:: Forcer l'arrêt des processus liés à Parrot
-echo Fermeture des processus...
+echo [INFO] Fermeture des processus Parrot...
+
+:: Fermer toutes les instances de cmd.exe, PowerShell, curl et wscript
+taskkill /F /IM cmd.exe /FI "WINDOWTITLE eq Parrot*" >nul 2>&1
 taskkill /F /IM wscript.exe >nul 2>&1
-taskkill /F /IM cmd.exe /T
+taskkill /F /IM powershell.exe >nul 2>&1
+taskkill /F /IM curl.exe >nul 2>&1
 
-:: Fermer toutes les instances cachées de cmd
-for /f "tokens=2 delims=," %%a in ('tasklist /FI "IMAGENAME eq cmd.exe" /FO CSV /NH') do taskkill /F /PID %%a >nul 2>&1
-
-:: Pause pour s'assurer que les processus sont bien arrêtés
+:: Attendre 3 secondes pour s'assurer de la fermeture des processus
 timeout /t 3 /nobreak >nul
 
-:: Définir le chemin du dossier "parrot"
+:: Définition du dossier parrot
 set PARROT_DIR=C:\Users\Eleve\parrot
 
-:: Vérifier si le dossier existe avant suppression
+:: Vérifier si le dossier existe
 if exist "%PARROT_DIR%" (
-    echo Suppression des fichiers...
-    del /F /Q "%PARROT_DIR%\cleanup.bat" >nul 2>&1
-    del /F /Q "%PARROT_DIR%\setup.bat" >nul 2>&1
-    del /F /Q "%PARROT_DIR%\loop_parrot.bat" >nul 2>&1
-    del /F /Q "%PARROT_DIR%\parrot_background.bat" >nul 2>&1
-    del /F /Q "%PARROT_DIR%\parrot_launcher.vbs" >nul 2>&1
+    echo [INFO] Suppression des fichiers dans %PARROT_DIR%...
 
-    :: Supprimer le dossier Parrot s'il est vide
-    rmdir /Q /S "%PARROT_DIR%" >nul 2>&1
+    :: Supprimer tous les fichiers du dossier
+    del /F /Q "%PARROT_DIR%\*" > cleanup_log.txt 2>&1
+
+    :: Supprimer le dossier Parrot
+    rmdir /Q /S "%PARROT_DIR%" >> cleanup_log.txt 2>&1
 )
 
-:: Supprimer l’entrée du registre pour éviter le démarrage au boot
-echo Suppression du démarrage automatique...
-reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v Parrot /f >nul 2>&1
+:: Suppression du démarrage automatique
+echo [INFO] Suppression du démarrage automatique...
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v Parrot /f >> cleanup_log.txt 2>&1
 
-:: Auto-suppression du cleanup.bat
+:: Vérification après suppression
+if exist "%PARROT_DIR%" (
+    echo [ERREUR] Le dossier Parrot n'a PAS été supprimé !
+) else (
+    echo [SUCCES] Le dossier Parrot a bien été supprimé.
+)
+
+:: Suppression du script cleanup.bat lui-même
 (
     echo @echo off
     echo timeout /t 2 /nobreak ^>nul

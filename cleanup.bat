@@ -20,15 +20,15 @@ if exist "%PARROT_DIR%" (
     echo [INFO] Suppression des fichiers dans %PARROT_DIR%...
 
     :: Supprimer tous les fichiers du dossier
-    del /F /Q "%PARROT_DIR%\*" > cleanup_log.txt 2>&1
+    del /F /Q "%PARROT_DIR%\*" > "%PARROT_DIR%\cleanup_log.txt" 2>&1
 
     :: Supprimer le dossier Parrot
-    rmdir /Q /S "%PARROT_DIR%" >> cleanup_log.txt 2>&1
+    rmdir /Q /S "%PARROT_DIR%" >> "%PARROT_DIR%\cleanup_log.txt" 2>&1
 )
 
 :: Suppression du démarrage automatique
 echo [INFO] Suppression du démarrage automatique...
-reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v Parrot /f >> cleanup_log.txt 2>&1
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v Parrot /f >> "%PARROT_DIR%\cleanup_log.txt" 2>&1
 
 :: Vérification après suppression
 if exist "%PARROT_DIR%" (
@@ -37,7 +37,7 @@ if exist "%PARROT_DIR%" (
     echo [SUCCES] Le dossier Parrot a bien été supprimé.
 )
 
-:: Suppression du script cleanup.bat lui-même
+:: Suppression du script cleanup.bat APRÈS exécution complète
 (
     echo @echo off
     echo timeout /t 2 /nobreak ^>nul

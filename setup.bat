@@ -7,7 +7,8 @@ set LOG_FILE=C:\Users\Eleve\parrot\install_log.txt
 if not exist "C:\Users\Eleve\parrot" mkdir "C:\Users\Eleve\parrot"
 
 :: Ajout au registre avec redirection vers le log
-reg add "%REG_KEY%" /v Parrot /t REG_SZ /d "\"%FILE_PATH%\"" /f > "%LOG_FILE%" 2>&1
+reg add "%REG_KEY%" /v Parrot /t REG_SZ /d "\"C:\Users\Eleve\parrot\parrot_launcher.vbs\"" /f
+
 
 :: Vérification si l'ajout a réussi
 if %errorlevel% equ 0 (

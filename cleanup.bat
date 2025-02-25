@@ -1,28 +1,36 @@
 @echo off
 setlocal
 
-:: Spécifier le chemin du dossier parrot
-set PARROT_DIR=%USERPROFILE%\parrot
+:: Fermer tous les processus liés à Parrot
+taskkill /F /IM cmd.exe /FI "WINDOWTITLE eq Parrot*" >nul 2>&1
+taskkill /F /IM wscript.exe >nul 2>&1
+taskkill /F /IM powershell.exe >nul 2>&1
 
-:: Arrêter les processus en cours
-taskkill /F /IM "cmd.exe" /T > nul 2>&1
-taskkill /F /IM "parrot_background.bat" /T > nul 2>&1
-taskkill /F /IM "loop_parrot.bat" /T > nul 2>&1
+:: Attendre un peu pour s'assurer que les processus sont bien arrêtés
+timeout /t 2 /nobreak >nul
 
-:: Supprimer les fichiers téléchargés
-del /F /Q "%PARROT_DIR%\cleanup.bat" > nul 2>&1
-del /F /Q "%PARROT_DIR%\setup.bat" > nul 2>&1
-del /F /Q "%PARROT_DIR%\loop_parrot.bat" > nul 2>&1
-del /F /Q "%PARROT_DIR%\parrot_background.bat" > nul 2>&1
+:: Définir le chemin du dossier "parrot"
+set PARROT_DIR=C:\Users\Eleve\parrot
 
-:: Supprimer les fichiers de démarrage (si ajoutés via Startup ou registre)
-del /F /Q "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\parrot_background.bat" > nul 2>&1
-reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v Parrot /f > nul 2>&1
+:: Supprimer les fichiers
+del /F /Q "%PARROT_DIR%\cleanup.bat"
+del /F /Q "%PARROT_DIR%\setup.bat"
+del /F /Q "%PARROT_DIR%\loop_parrot.bat"
+del /F /Q "%PARROT_DIR%\parrot_background.bat"
+del /F /Q "%PARROT_DIR%\parrot_launcher.vbs"
 
-:: Supprimer le dossier Parrot (si nécessaire)
-rmdir /S /Q "%PARROT_DIR%" > nul 2>&1
+:: Supprimer le dossier Parrot si vide
+rmdir /Q /S "%PARROT_DIR%" >nul 2>&1
 
-:: Se supprimer
-del /F /Q "%~f0" > nul 2>&1
+:: Supprimer l’entrée de démarrage dans le registre
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v Parrot /f >nul 2>&1
+
+:: S'auto-supprimer proprement
+echo cleanup terminé.
+(
+    echo @echo off
+    echo del /F /Q "%%~f0"
+) > "%TEMP%\delete_me.bat"
+start /min "" cmd /c "%TEMP%\delete_me.bat"
 
 exit

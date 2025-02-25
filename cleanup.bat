@@ -3,10 +3,8 @@ setlocal
 
 :: Forcer l'arrêt des processus liés à Parrot
 echo Fermeture des processus...
-taskkill /F /IM cmd.exe /FI "WINDOWTITLE eq Parrot*" >nul 2>&1
 taskkill /F /IM wscript.exe >nul 2>&1
-taskkill /F /IM powershell.exe >nul 2>&1
-taskkill /F /IM curl.exe >nul 2>&1
+taskkill /F /IM cmd.exe /T
 
 :: Fermer toutes les instances cachées de cmd
 for /f "tokens=2 delims=," %%a in ('tasklist /FI "IMAGENAME eq cmd.exe" /FO CSV /NH') do taskkill /F /PID %%a >nul 2>&1
